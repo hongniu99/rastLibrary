@@ -23,7 +23,7 @@ public class rastGrid {
         rastGrid start = new rastGrid(5);
 
         System.out.println(start.getSize());
-        System.out.println()
+        System.out.println();
         System.out.println("hi");
     }
 }
