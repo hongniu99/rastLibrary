@@ -18,9 +18,17 @@ public class rastGrid {
     public int[][] getGridList() {
         return grid;
     }
+
+
     //filling methods
     public void putPixel(int x, int y) {
         grid[x][y] = (1);
+    }
+    public void putPixel(Vector3 point) {
+        int x = (int) point.getX();
+        int y = (int) point.getY();
+        grid[x][y] = 1;
+
     }
     public void removePixel(int x, int y) {
         grid[x][y] = (0);
@@ -32,19 +40,24 @@ public class rastGrid {
     public void printGrid() {
         for (int i = 0; i < meshSize; i++) {
             for (int j = 0; j < meshSize; j++) {
-                System.out.print(grid[i][j] + " ");
+                if (grid[i][j] == 0) {
+                    System.out.print(". ");
+                }
+                else {
+                    System.out.print("x ");
+                }
             }
             System.out.println();
         }
     }
+
+
+
+
+    //methods
     public static void main (String[] args) {
 
-        rastGrid start = new rastGrid(10);
-        System.out.println(start.getSize());
-        start.putPixel(3,4);
-        System.out.println("Pixel is " + start.checkPixel(3,4));
-        System.out.println("hi");
-        start.printGrid();
+
 
     }
 }
