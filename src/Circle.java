@@ -1,18 +1,49 @@
 import java.util.*;
 
-public class Circle {
+public class Circle extends AbstractCleanable {
     private double centerX;
     private double centerY;
     private double radius;
-    private double orientation;
+    private Orientation orient;
     private List<Vector3> fillList;
 
+    /**************************
+     *   Definitions
+     **************************/
+
+    private static final long serialVersionUID = -8178661231591223781L;
+
+    public static enum Orientation
+    {
+        Clockwise,
+        Counterclockwise;
+    }
+
+    public static enum Side
+    {
+        BoundedSide,
+        UnboundedSide,
+        Boundary;
+    }
+
+    private static final Orientation DefaultOrientation = Orientation.Clockwise;
+
+    /**************************
+     *   Data Members
+     **************************/
+
+    private static Cleaner m_cleaner;
+    /**************************
+     *   Constructors
+     **************************/
+                        /**************************
+                         *  hong's Constructors
+                         **************************/
     //constructors
     public Circle(double x, double y, double rad, double ori){
         centerX = x;
         centerY = y;
         radius = rad;
-        orientation = ori;
         setFillList();
     }
     //vector center constructor
@@ -20,9 +51,54 @@ public class Circle {
         centerX = center.getX();
         centerY = center.getY();
         radius = rad;
-        orientation = ori;
         setFillList();
+
+                        /**************************
+                         *   Jeff's Constructors
+                         **************************/
     }
+    static
+    {
+        m_cleaner = new Cleaner( )
+        {
+            @Override
+            public void cleanup( int id )
+            {
+                Circle.cleanup( id );
+            }
+        };
+    }
+    public Circle(Vector3 center, double squaredRadius) {
+        this(center, squaredRadius, DefaultOrientation);
+
+    }
+    public Circle(Vector3 center, double squaredRadius, Orientation orientation) {
+        super(m_cleaner);
+        centerX = center.getX();
+        centerY = center.getY();
+        radius = Math.sqrt(squaredRadius);
+        orient = orientation;
+
+    }
+                        /**************************
+                         *   Static Methods
+                         **************************/
+
+    public static native void cleanup( int id );
+
+
+
+    /**************************
+     *   Methods
+     *
+     *
+     *
+     *
+     *
+     *   questions here for nate
+     **************************/
+
+
 
     //accessors
     public void setCenterX(double x) {
@@ -34,8 +110,8 @@ public class Circle {
     public void setRadius(double rad) {
         radius = rad;
     }
-    public void setOrientation(double ori) {
-        orientation = ori;
+    public void setOrientation(Orientation ori) {
+        orient = ori;
     }
     public Vector3 getCenter() {
         return new Vector3(centerX, centerY);
@@ -49,8 +125,8 @@ public class Circle {
     public double getRadius() {
         return radius;
     }
-    public double getOrientation() {
-        return orientation;
+    public Orientation getOrientation() {
+        return orient;
     }
     public List<Vector3> getFillList() {
         return fillList;

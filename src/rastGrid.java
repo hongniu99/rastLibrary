@@ -30,6 +30,7 @@ public class rastGrid {
         grid[x][y] = 1;
 
     }
+
     public void removePixel(int x, int y) {
         grid[x][y] = (0);
     }
