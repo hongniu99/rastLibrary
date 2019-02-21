@@ -24,9 +24,9 @@ public class rastGrid {
     public void putPixel(int x, int y) {
         grid[x][y] = (1);
     }
-    public void putPixel(Vector3 point) {
-        int x = (int) point.getX();
-        int y = (int) point.getY();
+    public void putPixel(Vector2 point) {
+        int x = (int) point.get(0);
+        int y = (int) point.get(1);
         grid[x][y] = 1;
 
     }
@@ -55,7 +55,7 @@ public class rastGrid {
 
 
 
-    //methods
+    //main
     public static void main (String[] args) {
 
 

@@ -1,64 +1,40 @@
 import java.util.*;
 
-public class Box extends AbstractCleanable {
+public class Box {
+
+    /**************************
+     *   Data Members
+     **************************/
+
     double x_min;
     double x_max;
     double y_min;
     double y_max;
-    List<Vector3> fullPointList;
-
+    List<Vector2> fullPointList;
 
 
 
     /**************************
-     *   Definitions
-     **************************//*
-
-    private static final long serialVersionUID = -6742712402374735723L;
-
-
-    *//**************************
-     *   Data Members
-     **************************//*
-
-    private static Cleaner m_cleaner;
-
-
-    *//**************************
      *   Constructors
-     **************************//*
-
-    static
-    {
-        m_cleaner = new Cleaner( )
-        {
-            @Override
-            public void cleanup( int id )
-            {
-                Box.cleanup( id );
-            }
-        };
-    }
-    */
+     **************************/
     public Box(double xmin, double xmax, double ymin, double ymax) {
         x_min = xmin;
         x_max = xmax;
         y_min = ymin;
         y_max = ymax;
-        fullPointList = new ArrayList<Vector3>();
+        fullPointList = new ArrayList<Vector2>();
         //fix this double incrementation
 
-        //DJSFJS DKLFJL KSDJFKJSDKLJF not working
         for (double i = x_min; i <= x_max; i++) {
-            Vector3 newPoint = new Vector3(i, y_min);
+            Vector2 newPoint = new Vector2(i, y_min);
             fullPointList.add(newPoint);
-            newPoint = new Vector3(i, y_max);
+            newPoint = new Vector2(i, y_max);
             fullPointList.add(newPoint);
         }
         for (double i = y_min; i <= y_max; i++) {
-            Vector3 newPoint = new Vector3(i, x_min);
+            Vector2 newPoint = new Vector2(x_min, i);
             fullPointList.add(newPoint);
-            newPoint = new Vector3(i, x_max);
+            newPoint = new Vector2(x_max, i);
             fullPointList.add(newPoint);
         }
     }
@@ -67,14 +43,14 @@ public class Box extends AbstractCleanable {
         x_max = other.getXMax();
         y_max = other.getYMax();
         y_min = other.getYMin();
-        fullPointList = other.getFullPointList();
+        fullPointList = other.getFillList();
     }
 
 
     /**************************
      *   Methods
      **************************/
-    public List<Vector3> getFullPointList() {
+    public List<Vector2> getFillList() {
         return fullPointList;
     }
     public double getXMin() {
@@ -91,27 +67,48 @@ public class Box extends AbstractCleanable {
         return y_max;
     }
 
+
+    //jeff things
     public double getWidth() {
         return x_max- x_min;
     }
     public double getHeight() {
         return y_max - y_min;
     }
-    public boolean containsPoint (Vector3 point) {
-        return containsPoint(point.getX(), point.getY());
+    public boolean containsPoint (Vector2 point) {
+        return containsPoint(point.get(0), point.get(1));
     }
     public boolean containsPoint(double x, double y) {
         return x>= x_min && x <= x_max && y >= y_min && y<= y_max;
     }
+
+    public boolean intersects(Box other) {
+        return other.containsPoint( getXMin(), getYMin() )
+                || other.containsPoint( getXMin(), getYMax() )
+                || other.containsPoint( getXMax(), getYMin() )
+                || other.containsPoint( getXMax(), getYMax() );
+
+    }
+
+
+
+
+
+
+
+
     //print
     public void printBoxPoints() {
         for (int i =0; i < fullPointList.size(); i++) {
-            fullPointList.get(i).printVector();
+            System.out.println("(" + fullPointList.get(i).get(0) + ", " + fullPointList.get(i).get(1) + ")");
         }
     }
 
 
 
+    /**************************
+     *   Methods
+     **************************/
 
 
 

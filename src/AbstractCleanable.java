@@ -1,6 +1,8 @@
 
 public abstract class AbstractCleanable
 {
+    //hopefully unused
+
     /**************************
      *   Data Members
      **************************/
@@ -38,10 +40,8 @@ public abstract class AbstractCleanable
      *   Methods
      **************************/
 
-    public void cleanup( )
-    {
-        if( m_id >= 0 )
-        {
+    public void cleanup( ) {
+        if( m_id >= 0 ) {
             m_cleaner.cleanup( m_id );
             m_id = -1;
         }
@@ -52,17 +52,15 @@ public abstract class AbstractCleanable
      *   Accessors
      **************************/
 
-    protected int getId( )
-    {
+    protected int getId( ) {
         return m_id;
     }
-    protected void setId( int val )
-    {
+
+    protected void setId( int val ) {
         m_id = val;
     }
 
-    protected void setCleaner( Cleaner cleaner )
-    {
+    protected void setCleaner( Cleaner cleaner ) {
         m_cleaner = cleaner;
     }
 }

@@ -1,23 +1,24 @@
 import java.util.*;
+import java.io.*;
 
-public class Circle extends AbstractCleanable {
+public class Circle implements Serializable {
+
+
+    /**************************
+     *   Data Members
+     **************************/
+
     private double centerX;
     private double centerY;
     private double radius;
     private Orientation orient;
-    private List<Vector3> fillList;
+    private List<Vector2> fillList;
 
     /**************************
      *   Definitions
      **************************/
 
     private static final long serialVersionUID = -8178661231591223781L;
-
-    public static enum Orientation
-    {
-        Clockwise,
-        Counterclockwise;
-    }
 
     public static enum Side
     {
@@ -29,73 +30,35 @@ public class Circle extends AbstractCleanable {
     private static final Orientation DefaultOrientation = Orientation.Clockwise;
 
     /**************************
-     *   Data Members
-     **************************/
-
-    private static Cleaner m_cleaner;
-    /**************************
      *   Constructors
      **************************/
-                        /**************************
-                         *  hong's Constructors
-                         **************************/
+
     //constructors
-    public Circle(double x, double y, double rad, double ori){
+    public Circle(double x, double y, double rad, Orientation ori){
         centerX = x;
         centerY = y;
         radius = rad;
+        orient = ori;
         setFillList();
     }
-    //vector center constructor
-    public Circle(Vector3 center, double rad, double ori) {
-        centerX = center.getX();
-        centerY = center.getY();
-        radius = rad;
-        setFillList();
 
-                        /**************************
-                         *   Jeff's Constructors
-                         **************************/
-    }
-    static
-    {
-        m_cleaner = new Cleaner( )
-        {
-            @Override
-            public void cleanup( int id )
-            {
-                Circle.cleanup( id );
-            }
-        };
-    }
-    public Circle(Vector3 center, double squaredRadius) {
+
+    public Circle(Vector2 center, double squaredRadius) {
         this(center, squaredRadius, DefaultOrientation);
 
     }
-    public Circle(Vector3 center, double squaredRadius, Orientation orientation) {
-        super(m_cleaner);
-        centerX = center.getX();
-        centerY = center.getY();
+    public Circle(Vector2 center, double squaredRadius, Orientation ori) {
+
+        centerX = center.get(0);
+        centerY = center.get(1);
         radius = Math.sqrt(squaredRadius);
-        orient = orientation;
+        orient = ori;
 
     }
-                        /**************************
-                         *   Static Methods
-                         **************************/
-
-    public static native void cleanup( int id );
-
 
 
     /**************************
      *   Methods
-     *
-     *
-     *
-     *
-     *
-     *   questions here for nate
      **************************/
 
 
@@ -113,8 +76,8 @@ public class Circle extends AbstractCleanable {
     public void setOrientation(Orientation ori) {
         orient = ori;
     }
-    public Vector3 getCenter() {
-        return new Vector3(centerX, centerY);
+    public Vector2 getCenter() {
+        return new Vector2(centerX, centerY);
     }
     public double getCenterX() {
         return centerX;
@@ -125,38 +88,117 @@ public class Circle extends AbstractCleanable {
     public double getRadius() {
         return radius;
     }
+    public double getSquaredRadius() {
+        return radius * radius;
+    }
     public Orientation getOrientation() {
         return orient;
     }
-    public List<Vector3> getFillList() {
+    public List<Vector2> getFillList() {
         return fillList;
+    }
+    public Side getSide(Vector2 point) {
+        double distSq = point.getSquaredDistance( getCenter() );
+        double radiusSq = getSquaredRadius();
+
+        if( radiusSq == distSq )
+        {
+            return Side.Boundary;
+        }
+        else if( distSq > radiusSq )
+        {
+            return Side.UnboundedSide;
+        }
+        else
+        {
+            return Side.BoundedSide;
+        }
+    }
+
+    /*
+    public native boolean isOnBoundedSide( Face face );
+    public native boolean isOnUnboundedSide( Face face );
+    public native boolean isOnBoundedSide( Vertex vertex );
+    public native boolean isOnUnboundedSide( Vertex vertex );
+    */
+    public boolean equals( Circle other ) {
+        boolean equality = true;
+        if (this.getCenterX() != other.getCenterX()) {
+            equality = false;
+        }
+        if (this.getCenterY() != other.getCenterY()) {
+            equality = false;
+        }
+        if (this.getRadius() != other.getRadius()) {
+            equality = false;
+        }
+        if (this.getOrientation() != other.getOrientation()) {
+            equality = false;
+        }
+
+        return equality;
     }
 
 
-    public List<Vector3> setFillList() {
+    /*
+    public edu.duke.donaldLab.share.geom.Circle toCircle( )
+    {
+        return new edu.duke.donaldLab.share.geom.Circle( getCenter(), Math.sqrt( getSquaredRadius() ) );
+    }
+
+    @Override
+    public int hashCode( )
+    {
+        Vector2 point = getCenter();
+        return HashCalculator.combineHashes(
+                new Double( point.x ).hashCode(),
+                new Double( point.y ).hashCode(),
+                new Double( getSquaredRadius() ).hashCode()
+        );
+    }
+    */
+    @Override
+    public boolean equals( Object other )
+    {
+        if( other == null )
+        {
+            return false;
+        }
+        else if( !( other instanceof Circle ) )
+        {
+            return false;
+        }
+
+        return equals( (Circle) other );
+    }
+    /**************************
+     *   Functions
+     **************************/
+
+    public List<Vector2> setFillList() {
         //https://www.geeksforgeeks.org/mid-point-circle-drawing-algorithm/
         double x_center = centerX;
         double y_center = centerY;
 
         //initialize fill list
-        fillList = new ArrayList<Vector3>();
+        fillList = new ArrayList<Vector2>();
         double x = radius;
         double y = 0;
 
 
         //first point
 
-        Vector3 fill = new Vector3(x + x_center, y + y_center);
+        Vector2 fill = new Vector2(x + x_center, y + y_center);
         fillList.add(fill);
         //0 radius returns only center
         if (radius == 0) {
             return fillList;
         }
-        fill = new Vector3(-x + x_center, y + y_center);
+        fill = new Vector2(-x + x_center, y + y_center);
         fillList.add(fill);
-        fill = new Vector3(y + x_center, x + y_center);
+        fill = new Vector2(y + x_center, x + y_center);
         fillList.add(fill);
-        fill = new Vector3(-y + x_center, -x + y_center);
+        fill = new Vector2(-y + x_center, -x + y_center);
         fillList.add(fill);
 
         //initialize midpoint P
@@ -180,25 +222,25 @@ public class Circle extends AbstractCleanable {
             }
 
             //add reflection in other octants
-            fill = new Vector3(x + x_center, y + y_center);
+            fill = new Vector2(x + x_center, y + y_center);
             fillList.add(fill);
-            fill = new Vector3(-x + x_center, y + y_center);
+            fill = new Vector2(-x + x_center, y + y_center);
             fillList.add(fill);
-            fill = new Vector3(x + x_center, -y + y_center);
+            fill = new Vector2(x + x_center, -y + y_center);
             fillList.add(fill);
-            fill = new Vector3(-x + x_center, -y + y_center);
+            fill = new Vector2(-x + x_center, -y + y_center);
             fillList.add(fill);
 
             //if point is on x=y then perimeter is filled
 
             if (x != y) {
-                fill = new Vector3(y + x_center, x + y_center);
+                fill = new Vector2(y + x_center, x + y_center);
                 fillList.add(fill);
-                fill = new Vector3(-y + x_center, x + y_center);
+                fill = new Vector2(-y + x_center, x + y_center);
                 fillList.add(fill);
-                fill = new Vector3(y + x_center, -x + y_center);
+                fill = new Vector2(y + x_center, -x + y_center);
                 fillList.add(fill);
-                fill = new Vector3(-y + x_center, -x + y_center);
+                fill = new Vector2(-y + x_center, -x + y_center);
                 fillList.add(fill);
             }
 
@@ -214,7 +256,7 @@ public class Circle extends AbstractCleanable {
     //print list of points
     public void printCirclePoints() {
         for (int i =0; i < fillList.size(); i++) {
-            fillList.get(i).printVector();
+            System.out.println("(" + fillList.get(i).get(0) + ", " + fillList.get(i).get(1) + ")");
         }
     }
 
