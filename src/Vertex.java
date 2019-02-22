@@ -23,8 +23,6 @@ public class Vertex {
         y_val = point.get(1);
     }
 
-
-
     /**************************
      *   Accessors
      **************************/

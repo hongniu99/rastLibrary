@@ -29,5 +29,19 @@ public class Halfedge {
         return target;
      }
 
+    /**************************
+     *   To Do
+     **************************/
+    /*
+    public Circle getCircle() {
+
+    }
+    public Box getBoundingBox() {
+
+    }h
+    public Face getAdjacentFace() {
+
+    }
+    */
 
 }
